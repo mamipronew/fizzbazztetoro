@@ -43,8 +43,9 @@ for (let index = 0; index < tblArray.length; index++) {
   tblArray[index] = new Array(gameObj.gritYoko).fill(0);
   
 }
-let num = selectNum();
-function drawBlock(x, y) {
+
+
+function drawBlock(x, y, num) {
 
   let blockSize = gameObj.itemWidth;
   let px = x * blockSize;
@@ -59,10 +60,11 @@ function drawBlock(x, y) {
 
 
 tblArray[1][2] = 1;
-drawAll()
+let num = selectNum();
+drawAll(num);
 
 
-function drawAll() {
+function drawAll(num) {
 
   ctx.clearRect(0, 0, screenWidth, screenHeight);
   for (let y = 0; y < gameObj.gritTate ; y++) {
@@ -70,7 +72,7 @@ function drawAll() {
 
 
       if (tblArray[y][x] == 1) {
-        drawBlock(moveX + x, moveY + y) ;
+        drawBlock(moveX + x, moveY + y , num) ;
 
              }
       
@@ -84,7 +86,7 @@ function drawAll() {
      //もし動かないならそこの配列の数字を表示する（別な関数でfieldArrayに数字を入れる）
       if (fieldArray[y][x] !== 0) {
         num = fieldArray[y][x];
-        drawBlock(x, y) ;
+        drawBlock(x, y , num) ;
 
              }
       
@@ -146,7 +148,7 @@ document.onkeydown = function(e)
 
  
 
-  drawAll() ;
+  drawAll(num) ;
 
  
  
@@ -184,7 +186,7 @@ return true;
 
 function selectNum() {
 
-  let num = itemArry[0];
+  let num = itemArry[0] + 1;
   itemArry.shift();
   return num;
     
@@ -201,11 +203,23 @@ let ny = 0;
 
 
           if( ny >= gameObj.gritTate -1){
-            fieldArray[ny][nx]= 1;
+            
+            fieldArray[ny][nx] = num;
+
+          if (num % 15 == 0 
+            
+            ) {
+            console.log("FizzBUZZ");
+            
+          } 
+
+            
+            
             num = selectNum();
+            console.log(num);
           moveX = 0;
           moveY = 0;
-            drawAll() ;
+            drawAll(num) ;
           
           }
   
