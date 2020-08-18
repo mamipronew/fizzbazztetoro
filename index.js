@@ -159,14 +159,57 @@ document.onkeydown = function(e)
 }
 
 
+   function check5s(fieldArray){
+     return new Promise(function(resolve, reject){
+      for (let ny = 0; ny < 8; ny++) {
+        if (fieldArray[ny][0] != 0 &&
+          fieldArray[ny][1] != 0 &&
+          fieldArray[ny][2] != 0 &&
+          fieldArray[ny][3] != 0 &&
+          fieldArray[ny][4] != 0 
+       
+          ){ tempY = ny;
+            resolve(tempY);
+            copyArray = fieldArray;
+            break;  }
+    }
+     
+
+     })
+     
+   }
+
    
 
+
+
+
+        function lineDelCopy(tempY){
+          if(tempY == 0) return;
+        
+        
+        fieldArray[tempY][0] = 0;
+          fieldArray[tempY][1] = 0;
+          fieldArray[tempY][2] = 0;
+          fieldArray[tempY][3] = 0;
+          fieldArray[tempY][4] = 0;
+        
+          for (let ny = 1; ny < tempY; ny++) {
+            for (let nx = 0; nx < gameObj.gritYoko; nx++) {
+              fieldArray[ny][nx] = copyArray[ny -1][nx];
+              fieldArray[0][nx] = 0;
+            }
+            
+          }
+        
+          tempY = 0;
+        }
+        
   
-  
 
 
 
-
+        let tempY = 0;
 
 
 function deleteChecker(x,y ,num) {
@@ -176,7 +219,32 @@ function deleteChecker(x,y ,num) {
   } else if(num % 5 == 0)
     { 
 
+      check5s(fieldArray).then(function(result) {
 
+tempY = result;
+if(tempY == 0) return;
+console.log(tempY);
+console.log(copyArray );
+        fieldArray[tempY][0] = 0;
+          fieldArray[tempY][1] = 0;
+          fieldArray[tempY][2] = 0;
+          fieldArray[tempY][3] = 0;
+          fieldArray[tempY][4] = 0;
+        
+          for (let ny = 1; ny < tempY; ny++) {
+            for (let nx = 0; nx < gameObj.gritYoko; nx++) {
+              fieldArray[ny][nx] = copyArray[ny -1][nx];
+              fieldArray[0][nx] = 0;
+            }
+            
+          }
+        
+          tempY = 0;
+
+
+
+
+ })
 
 
 
