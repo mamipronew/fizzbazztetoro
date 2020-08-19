@@ -53,7 +53,7 @@ lineCount.push(y);
 
 
       
-copyArray = fieldArray;
+copyArray = fieldArray.concat();
 checkLine();
 
 

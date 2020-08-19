@@ -38,7 +38,7 @@ let fieldArray = [
   [0,0,0,0,0]
 ];
 
-let copyArray = [];
+let copyArray = []
 
 let tblArray = [...Array(gameObj.gritTate).keys()];
 for (let index = 0; index < tblArray.length; index++) {
@@ -150,43 +150,36 @@ document.onkeydown = function(e)
 
   }
 
- 
-
   drawAll(num) ;
 
- 
- 
 }
+let tempY = 0;
 
-
-   function check5s(fieldArray){
-     return new Promise(function(resolve, reject){
-      for (let ny = 0; ny < 8; ny++) {
-        if (fieldArray[ny][0] != 0 &&
-          fieldArray[ny][1] != 0 &&
-          fieldArray[ny][2] != 0 &&
-          fieldArray[ny][3] != 0 &&
-          fieldArray[ny][4] != 0 
-       
-          ){ tempY = ny;
-            resolve(tempY);
-            copyArray = fieldArray;
-            break;  }
-    }
+function checkLine(){
+   copyArray = JSON.parse(JSON.stringify(fieldArray));
+  for (let ny = 0; ny < 8; ny++) {
+      if (fieldArray[ny][0] != 0 &&
+        fieldArray[ny][1] != 0 &&
+        fieldArray[ny][2] != 0 &&
+        fieldArray[ny][3] != 0 &&
+        fieldArray[ny][4] != 0 
      
+        ){ tempY = ny;
+          break; }
+  }
+  
+      }
 
-     })
-     
-   }
-
+   
    
 
 
 
 
-        function lineDelCopy(tempY){
+        function lineDelCopy(tempY) {
           if(tempY == 0) return;
-        
+          
+          console.log(copyArray);
         
         fieldArray[tempY][0] = 0;
           fieldArray[tempY][1] = 0;
@@ -194,22 +187,23 @@ document.onkeydown = function(e)
           fieldArray[tempY][3] = 0;
           fieldArray[tempY][4] = 0;
         
-          for (let ny = 1; ny < tempY; ny++) {
+          for (let ny = 1; ny < tempY + 1; ny++) {
             for (let nx = 0; nx < gameObj.gritYoko; nx++) {
+              console.log(ny);
               fieldArray[ny][nx] = copyArray[ny -1][nx];
               fieldArray[0][nx] = 0;
             }
             
           }
         
-          tempY = 0;
+          
         }
         
   
 
 
 
-        let tempY = 0;
+       
 
 
 function deleteChecker(x,y ,num) {
@@ -218,33 +212,10 @@ function deleteChecker(x,y ,num) {
     console.log("FizzBUZZ！");
   } else if(num % 5 == 0)
     { 
-
-      check5s(fieldArray).then(function(result) {
-
-tempY = result;
-if(tempY == 0) return;
-console.log(tempY);
-console.log(copyArray );
-        fieldArray[tempY][0] = 0;
-          fieldArray[tempY][1] = 0;
-          fieldArray[tempY][2] = 0;
-          fieldArray[tempY][3] = 0;
-          fieldArray[tempY][4] = 0;
-        
-          for (let ny = 1; ny < tempY; ny++) {
-            for (let nx = 0; nx < gameObj.gritYoko; nx++) {
-              fieldArray[ny][nx] = copyArray[ny -1][nx];
-              fieldArray[0][nx] = 0;
-            }
-            
-          }
-        
-          tempY = 0;
-
-
-
-
- })
+      
+      checkLine();
+      lineDelCopy(tempY);
+      tempY = 0;
 
 
 
@@ -352,3 +323,5 @@ let ny = 0;
   }
     
   }
+
+ 
