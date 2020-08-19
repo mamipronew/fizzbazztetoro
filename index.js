@@ -1,21 +1,17 @@
 'use strict';
 var canvas = document.getElementById("myCanvas");
-canvas.width = 640;		//canvasの横幅（よこはば）
+canvas.width = 500;		//canvasの横幅（よこはば）
 canvas.height = 480;	//canvasの縦幅（たてはば）
 var ctx = canvas.getContext("2d");
 
 const gameObj = {
-  itemsMap: new Map(),
-  itemWidth: 30,
-
-  
-  
+ itemWidth: 30,
+  score:0,
   gritYoko: 5,
-  gritTate: 8,
-  
-
+  gritTate: 8
 
 };
+
 const MaxY = gameObj.gritTate - 1;
 let moveX = 2;
 let moveY = 0;
@@ -27,18 +23,12 @@ let itemArry = [...Array(99).keys()] ;//配列を作る
 //fieldArrayは動かないけど消去される。tblArrayは動くけど消去されない。
 //　tblArray→fieldArrayにする
 
-let fieldArray = [
-  [0,0,0,0,0],
-  [0,0,0,0,0],
-  [0,0,0,0,0],
-  [0,0,0,0,0],
-  [0,0,0,0,0],
-  [0,0,0,0,0],
-  [0,0,0,0,0],
-  [0,0,0,0,0]
-];
-
-let copyArray = []
+let fieldArray = [...Array(gameObj.gritTate).keys()];
+for (let index = 0; index < fieldArray.length; index++) {
+  fieldArray[index] = new Array(gameObj.gritYoko).fill(0);
+  
+}
+let copyArray = [];
 
 let tblArray = [...Array(gameObj.gritTate).keys()];
 for (let index = 0; index < tblArray.length; index++) {
@@ -73,16 +63,12 @@ function drawAll(num) {
   ctx.clearRect(0, 0, screenWidth, screenHeight);
   for (let y = 0; y < gameObj.gritTate ; y++) {
     for (let x = 0; x < gameObj.gritYoko; x++) {
-
-
       if (tblArray[y][x] == 1) {
         drawBlock(moveX + x, moveY + y , num) ;
-
-             }
-      
+             }     
     }
-    
   }
+
 
   for (let y = 0; y < gameObj.gritTate ; y++) {
     for (let x = 0; x < gameObj.gritYoko; x++) {
@@ -93,7 +79,6 @@ function drawAll(num) {
         drawBlock(x, y , num) ;
 
              }
-      
     }
     
   }
@@ -106,16 +91,12 @@ function drawAll(num) {
 document.onkeydown = function(e)
 {
 
-
-
   switch (e.keyCode) {
     case 37: //左
      if(checkMove(-1, 0)){
       moveX --;
      }
-      
-      
-      
+ 
       break;
     
       case 38: //上
@@ -123,8 +104,7 @@ document.onkeydown = function(e)
         moveY --;
       }
       
-    
-      
+
       break;
       case 39: //右
       if (checkMove(1, 0)) {
@@ -139,13 +119,8 @@ document.onkeydown = function(e)
         checkBottom();
 
       }
-   
-      
-      
       break;
-      case 32: //スペース
 
-      break;
   
 
   }
@@ -157,6 +132,7 @@ let tempY = 0;
 
 function checkLine(){
    copyArray = JSON.parse(JSON.stringify(fieldArray));
+   console.log(fieldArray + "5checkライン");
   for (let ny = 0; ny < 8; ny++) {
       if (fieldArray[ny][0] != 0 &&
         fieldArray[ny][1] != 0 &&
@@ -170,16 +146,12 @@ function checkLine(){
   
       }
 
-   
-   
-
-
 
 
         function lineDelCopy(tempY) {
           if(tempY == 0) return;
           
-          console.log(copyArray);
+         console.log (fieldArray + "らいんでる");
         
         fieldArray[tempY][0] = 0;
           fieldArray[tempY][1] = 0;
@@ -189,18 +161,67 @@ function checkLine(){
         
           for (let ny = 1; ny < tempY + 1; ny++) {
             for (let nx = 0; nx < gameObj.gritYoko; nx++) {
-              console.log(ny);
+            
               fieldArray[ny][nx] = copyArray[ny -1][nx];
               fieldArray[0][nx] = 0;
             }
             
           }
-        
+          scoreChecker(5);
           
         }
-        
-  
 
+//作りかけ
+function lineDelCopy2(num,x,y){
+  copyArray = JSON.parse(JSON.stringify(fieldArray));
+  
+ 
+  /*
+  100で割った余り
+
+  1の時左下一個 1消す yからy+1にコピー
+  3の時左一個　1消す  y-1からyにコピー
+  4の時左下から二個 2消す y-1からy+1にコピー
+  11の時左から二個 2消す　y-2からyにコピー
+  12の時3個　3消す。y -2からコピー
+
+  左　まず配列にして、四桁あったら→
+[0]と[1]を数字に戻す
+
+  11の時左下一個
+  13の時左一個
+  24の時左下から二個
+  31の時左から二個
+  42の時3個
+
+  
+  */
+
+  if(num % 100 == 1){
+
+    for (let ny = 0; ny < y-2 ; ny++) {
+      if(!copyArray[y][x-1])continue;
+      fieldArray[y + 1][x-1] = copyArray[y][x-1];
+
+      fieldArray[y + 1][x-1]=0;
+    }
+
+  }
+
+  if(num % 100 == 3){
+
+    for (let ny = 0; ny < y-1 ; ny++) {
+      if(!copyArray[y -1][x-1])continue;
+      fieldArray[y][x-1] = copyArray[y -1][x-1];
+
+      fieldArray[y][x-1] =0;
+    }
+
+  }
+
+
+
+}
 
 
        
@@ -208,38 +229,93 @@ function checkLine(){
 
 function deleteChecker(x,y ,num) {
   if (num % 15 == 0) {
+    checkFizzBuzz(x, y);
     
-    console.log("FizzBUZZ！");
   } else if(num % 5 == 0)
     { 
-      
+      console.log(fieldArray + "5の入り口");
       checkLine();
+      console.log(x + y + num + tempY);
       lineDelCopy(tempY);
       tempY = 0;
-
-
 
       
 }
  
   else if (num % 3 == 0 && y != 7) {
-    fieldArray[0][x] =0;
-    fieldArray[1][x] =0;
-    fieldArray[2][x] =0;
-    fieldArray[3][x] =0;
-    fieldArray[4][x] =0;
-    fieldArray[5][x] =0;
-    fieldArray[6][x] =0;
-    fieldArray[7][x] =0;
-  
-    
+    console.log(x + y + num);
+    (fieldArray + "3の入り口");
+    check3(x);
+
   }
 
   
 }
 
+function check3(x){
+  let score3 = 0;
 
-  //作りかけ
+  for (let ny = 0; ny < gameObj.gritTate; ny++) {
+    if(fieldArray[ny][x] != 0){ score3 ++;}
+    fieldArray[ny][x] = 0;
+   
+    
+  }
+ if (score3 == 1) {
+   score3 = 0;
+ }
+ console.log(fieldArray + "check３");
+ scoreChecker(score3);
+
+}
+function checkFizzBuzz(x,y){
+  if(y = gameObj.gritTate -1){
+console.log("下はないよラッキー！");
+  }
+  else{
+    console.log("下もcheckするよ！");
+  }
+
+}
+
+
+
+
+function scoreChecker(num) {
+  switch (num) {
+    case 1:
+      gameObj.score += 100;
+      
+      break;
+    case 2:
+      gameObj.score += 300;
+      
+      break;
+    case 3:
+      gameObj.score += 700;
+      break;
+
+    case 4:
+      gameObj.score += 1500;
+      break;
+
+    case 5:
+      gameObj.score += 3000;
+      break;
+    case 6:
+      gameObj.score += 5000;
+      break;
+    case 7:
+      gameObj.score += 10000;
+      break;
+
+ 
+  }
+  console.log(gameObj.score);
+}
+
+
+
 //x, yの動きの幅を引数に取るのでmx,my
 function checkMove(mx, my) {
   for (let y = 0; y < gameObj.gritTate ; y++) {
@@ -281,8 +357,6 @@ function selectNum() {
 
 
 
-
-
   function checkBottom() {
     for (let y = 0; y < gameObj.gritTate ; y++) {
       for (let x = 0; x < gameObj.gritYoko; x++) {
@@ -299,10 +373,6 @@ let ny = 0;
 
             deleteChecker(nx,ny,num);
 
-        
-
-            
-            
             num = selectNum();
            ;
           moveX = 2;
@@ -310,16 +380,11 @@ let ny = 0;
             drawAll(num) ;
           
           }
-  
-
 
         }
  
-        
-        
       }
-  
-  
+
   }
     
   }
